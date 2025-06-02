@@ -130,4 +130,4 @@ Project developed as part of the **Holberton School curriculum**.
 
 ## 🧑‍💻 Authors
 
-f-qrm & P-Y74
+[**f-qrm**](https://github.com/f-qrm) & [**P-Y74**](https://github.com/P-Y74)
