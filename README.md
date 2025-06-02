@@ -106,7 +106,7 @@ Each diagram will show:
 
 The repository is structured as follows:
 
-HBnB-UML/  
+holbertonschool-hbnb/  
 ├── 0. High-Level Package Diagram.md  
 ├── 1. Detailed Class Diagram for Business Logic Layer.md  
 ├── 2. Sequence Diagrams for API Calls.md  
@@ -119,31 +119,6 @@ Each `.md` file contains:
 - **0. High-Level Package Diagram**: Overview of system architecture and layer interaction
 - **1. Detailed Class Diagram**: UML class diagram covering `User`, `Place`, `Review`, `Amenity`
 - **2. Sequence Diagrams**: UML sequence diagrams for key API operations
-
----
-
-## 🧪 Deliverables
-
-### 📦 High-Level Package Diagram
-Describes the layered architecture and facade pattern.
-
-### 🧩 Class Diagram (Business Logic Layer)
-Details classes, attributes, methods, and relationships.
-
-### 🔁 Sequence Diagrams
-Four key API call diagrams:
-- User registration
-- Place creation
-- Review submission
-- Fetching places list
-
----
-
-## 🔧 Constraints
-
-- All diagrams must use **UML standard notation**
-- Business rules must be reflected accurately
-- Documentation must be implementation-ready
 
 ---
 
