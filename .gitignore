@@ -16,6 +16,7 @@ ENV/
 env/
 *.env
 *.venv
+venve
 
 # === Flask / App-specific ===
 instance/
