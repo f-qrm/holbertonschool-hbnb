@@ -97,6 +97,8 @@ class Review(BaseModel):
             TypeError: If any attribute is of incorrect type.
             PlaceNotFoundError: If the provided place is not a Place instance.
         """
+        super().__init__(id=id, created_at=created_at, updated_at=updated_at)
+
         if not isinstance(place, Place):
             raise InvalidPlaceError("place must be a Place instance")
         self.place = place
