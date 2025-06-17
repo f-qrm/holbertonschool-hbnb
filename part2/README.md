@@ -108,6 +108,129 @@ Once the app is running, visit [http://localhost:5000/api/v1/](http://localhost:
 
 ---
 
+## 📖 Business Logic Layer — Entities & Responsibilities
+
+This project implements a **Business Logic Layer (BLL)** that models the core entities of a booking application: **User**, **Place**, **Amenity**, and **Review**.  
+Each entity inherits from `BaseModel`, which provides shared functionality including:  
+✅ A unique identifier (`id`)  
+✅ Creation and update timestamps (`created_at`, `updated_at`)  
+✅ Basic persistence methods (`save`, `update`)  
+
+---
+
+### 📦 Entities and Responsibilities
+
+#### `BaseModel`
+
+Common base class:
+
+- Generates a unique `id` (`UUID`)
+- Includes `created_at` and `updated_at` timestamps
+- `save()` method: updates the `updated_at` timestamp  
+- `update(data)` method: updates specified attributes and calls `save()`
+
+---
+
+#### `User`
+
+Represents a user:
+
+- `id`, `created_at`, `updated_at`
+- `is_admin`: indicates admin rights
+- `first_name`, `last_name`, `email`
+- `places`: list of created places
+- `reviews`: list of submitted reviews
+
+**Responsibilities:**
+
+- Create new places (`new_place`)
+- Submit reviews (`new_review`)
+
+---
+
+#### `Place`
+
+Represents a location offered by a user:
+
+- `id`, `created_at`, `updated_at`
+- `owner`: ID of the user who owns the place
+- `title`, `description`
+- `price`, `latitude`, `longitude`
+- `amenitys`: list of linked amenities
+- `reviews`: list of linked reviews
+
+**Responsibilities:**
+
+- Add amenities (`add_amenity`)
+- Add reviews (`add_review`)
+
+---
+
+#### `Amenity`
+
+Represents an amenity linked to a place:
+
+- `id`, `created_at`, `updated_at`
+- `place`: ID of the linked place
+- `name`, `description`
+
+---
+
+#### `Review`
+
+Represents a review for a place:
+
+- `id`, `created_at`, `updated_at`
+- `place`: ID of the reviewed place
+- `user`: ID of the reviewer
+- `rating`: score given
+- `text`: review content
+
+---
+
+## 🛠 Example Usage
+
+```python
+from app.models.user import User
+from app.models.place import Place
+from app.models.amenity import Amenity
+from app.models.review import Review
+
+# Create a user
+user = User(is_admin=False, first_name="Alice", last_name="Smith", email="alice@example.com")
+
+# Create a place
+place = Place(owner=user.id, title="Cozy Apartment", description="A nice apartment in the city center", price="100")
+
+# Link the place to the user
+user.new_place(place)
+
+# Add an amenity to the place
+wifi = Amenity(name="WiFi", description="High-speed wireless internet")
+place.add_amenity(wifi)
+
+# Submit a review
+review = Review(place=place.id, user=user.id, rating="5", text="Great stay!")
+user.new_review(review)
+place.add_review(review)
+
+# Update the place
+place.update({"price": "120", "description": "Updated description"})
+
+# Save changes
+place.save()
+user.save()
+```
+
+---
+
+## 🌟 Notes
+
+- Each entity is independent, but relationships are maintained through associated lists (`places`, `reviews`, `amenitys`).
+- The model is designed to be extensible — new entities or features can be added easily.
+
+---
+
 ## 🚀 Coming Next
 
 - 🔐 **JWT Authentication**
