@@ -14,6 +14,8 @@ Classes:
     save/update methods.
     Review: Model representing a user review of a place, including rating
     and text.
+    PlaceNotFoundError: Custom exception raised when a Place instance is
+    invalid.
 
 Imports:
     uuid: For generating unique string IDs.
@@ -31,6 +33,8 @@ Usage example:
 
 import uuid
 from datetime import datetime
+from app.models.place import Place
+from app.models.user import User
 
 
 class BaseModel:
@@ -74,7 +78,7 @@ class Review(BaseModel):
     """Represents a review for a place made by a user."""
 
     def __init__(
-            self, place, user, rating, text, id=None, created_at=None,
+            self, id, place, user, rating, text, created_at=None,
             updated_at=None
     ):
         """
@@ -91,14 +95,12 @@ class Review(BaseModel):
 
         Raises:
             TypeError: If any attribute is of incorrect type.
-            TypeError: If the provided place is not a Place instance.
+            PlaceNotFoundError: If the provided place is not a Place instance.
         """
-        from app.models.place import Place
-        from app.models.user import User
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
 
         if not isinstance(place, Place):
-            raise TypeError("place must be a Place instance")
+            raise InvalidPlaceError("place must be a Place instance")
         self.place = place
         if not isinstance(user, User):
             raise TypeError("User must be an user instance")
@@ -111,3 +113,8 @@ class Review(BaseModel):
         if not isinstance(text, str):
             raise TypeError("text must be a string")
         self.text = text
+
+
+class InvalidPlaceError(Exception):
+    """Custom exception raised when a place is not found."""
+    pass

@@ -28,7 +28,6 @@ from app.models.place import Place
 from app.models.review import Review
 
 
-
 class BaseModel:
     """
     BaseModel class that provides common attributes and methods for other
@@ -116,7 +115,6 @@ class User(BaseModel):
             ValueError: If first_name or last_name exceed 50 characters or
             email is invalid.
         """
-        from app.models.review import Review
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
 
         if not isinstance(is_admin, bool):
