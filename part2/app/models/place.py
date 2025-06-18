@@ -13,7 +13,6 @@ from datetime import datetime
 
 from app.models.amenity import Amenity
 from app.models.review import Review
-from app.models.user import User
 
 
 class BaseModel:
@@ -96,6 +95,7 @@ class Place(BaseModel):
             TypeError: If any argument is of the wrong type.
             ValueError: If constraints (length/range) are violated.
         """
+        from app.models.user import User
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
         if not isinstance(owner, User):
             raise TypeError("owner must be a User instance")
