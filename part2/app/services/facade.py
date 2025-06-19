@@ -1,5 +1,10 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
+from app.models.amenity import Amenity
+import uuid
+from datetime import datetime
+from datetime import timezone
+
 
 class HBnBFacade:
     def __init__(self):
@@ -38,3 +43,35 @@ class HBnBFacade:
     def get_place(self, place_id):
         # Logic will be implemented in later tasks
         pass
+    def create_amenity(self, amenity_data):
+        name = amenity_data.get('name')
+        if not name or not isinstance(name, str):
+            raise ValueError("Name is required")
+        new_amenity = Amenity(
+            id=str(uuid.uuid4()),
+            name=name,
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
+            )
+        self.amenity_repo.add(new_amenity)
+        return new_amenity
+
+    def get_amenity(self, amenity_id):
+        amenity = self.amenity_repo.get(amenity_id)
+        if amenity is None:
+            return None
+        return amenity
+
+    def get_all_amenities(self):
+        return self.amenity_repo.get_all()
+
+    def update_amenity(self, amenity_id, amenity_data):
+        amenity = self.amenity_repo.get(amenity_id)
+        if amenity is None:
+            return None
+        name = amenity_data.get('name')
+        if not name:
+            raise ValueError('Name invalid')
+        amenity.name = name
+        amenity.updated_at = datetime.now(timezone.utc)
+        return amenity
