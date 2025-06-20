@@ -1,6 +1,7 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
+from app.models.place import Place
 import uuid
 from datetime import datetime
 from datetime import timezone
@@ -13,7 +14,40 @@ class HBnBFacade:
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
-    # Placeholder method for creating a user
+    def create_place(self, place_data):
+        # Placeholder for logic to create a place, including validation for price, latitude, and longitude
+        new_place = Place(
+            id=None,
+            owner_id=place_data['owner_id'],
+            title=place_data['title'],
+            description=place_data.get('description'),
+            price=float(place_data['price']),
+            latitude=float(place_data['latitude']),
+            longitude=float(place_data['longitude']),
+            created_at=None,
+            updated_at=None
+        )
+        self.place_repo.add(new_place)
+        return new_place
+
+    def get_place(self, place_id):
+        # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
+        return self.place_repo.get(place_id)
+
+    def get_all_places(self):
+        # Placeholder for logic to retrieve all places
+        return self.place_repo.get_all()
+
+    def update_place(self, place_id, place_data):
+        # Placeholder for logic to update a place
+        place = self.place_repo.get(place_id)
+        if place is None:
+            return None
+
+        place.updated_at = datetime.now(timezone.utc)
+        return place
+
+        # Placeholder method for creating a user
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
@@ -39,10 +73,6 @@ class HBnBFacade:
     def get_all_user(self):
         return self.user_repo.get_all()
 
-    # Placeholder method for fetching a place by ID
-    def get_place(self, place_id):
-        # Logic will be implemented in later tasks
-        pass
     def create_amenity(self, amenity_data):
         name = amenity_data.get('name')
         if not name or not isinstance(name, str):
