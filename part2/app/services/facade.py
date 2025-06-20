@@ -1,10 +1,11 @@
-from app.persistence.repository import InMemoryRepository
-from app.models.user import User
+import uuid
+from datetime import datetime, timezone
+
 from app.models.amenity import Amenity
 from app.models.place import Place
-import uuid
-from datetime import datetime
-from datetime import timezone
+from app.models.review import Review
+from app.models.user import User
+from app.persistence.repository import InMemoryRepository
 
 
 class HBnBFacade:
@@ -105,3 +106,37 @@ class HBnBFacade:
         amenity.name = name
         amenity.updated_at = datetime.now(timezone.utc)
         return amenity
+
+    def create_review(self, review_data):
+        user = self.get_user(review_data["user_id"])
+        place = self.get_place(review_data["place_id"])
+        if not user or not place:
+            raise ValueError("Invalid user_id or place_id")
+
+        rating = review_data.get("rating")
+        if not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating must be an integer between 1 and 5")
+
+        review = Review(**review_data)
+        self.review_repo.add(review)
+        return review
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return self.review_repo.get(place_id)
+
+    def update_review(self, review_id, review_data):
+        review = self.get_review(review_id)
+        if not review:
+            return None
+        self.review_repo.update(review_id, review_data)
+        return review
+
+    def delete_review(self, review_id):
+       review = self.review_repo.get(review_id)
+       return self.review_repo.delete(review)

@@ -74,7 +74,7 @@ class Review(BaseModel):
     """Represents a review for a place made by a user."""
 
     def __init__(
-            self, place, user, rating, text, id=None, created_at=None,
+            self, place_id, user_id, rating, text, id=None, created_at=None,
             updated_at=None
     ):
         """
@@ -93,16 +93,16 @@ class Review(BaseModel):
             TypeError: If any attribute is of incorrect type.
             TypeError: If the provided place is not a Place instance.
         """
-        from app.models.place import Place
-        from app.models.user import User
+
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
 
-        if not isinstance(place, Place):
-            raise TypeError("place must be a Place instance")
-        self.place = place
-        if not isinstance(user, User):
-            raise TypeError("User must be an user instance")
-        self.user = user
+        if not isinstance(place_id, str):
+            raise TypeError("place must be a string")
+        self.place_id = place_id
+
+        if not isinstance(user_id, str):
+            raise TypeError("User must be a string")
+        self.user_id = user_id
 
         if not isinstance(rating, int):
             raise TypeError("rating must be an integer")
