@@ -16,20 +16,49 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()
 
     def create_place(self, place_data):
-        # Placeholder for logic to create a place, including validation for price, latitude, and longitude
+        owner_id = place_data.get('owner_id')
+        if not owner_id:
+            raise ValueError("owner_id is required")
+
+        owner = self.user_repo.get(owner_id)
+        if not owner:
+            raise ValueError("Owner not found")
+
+        try:
+            price = float(place_data['price'])
+            latitude = float(place_data['latitude'])
+            longitude = float(place_data['longitude'])
+        except (ValueError, KeyError) as e:
+            raise ValueError("Invalid numeric value for price, latitude or longitude")
+
         new_place = Place(
             id=None,
-            owner=place_data['owner_id'],
+            owner=owner,
             title=place_data['title'],
             description=place_data.get('description'),
-            price=float(place_data['price']),
-            latitude=float(place_data['latitude']),
-            longitude=float(place_data['longitude']),
+            price=price,
+            latitude=latitude,
+            longitude=longitude,
             created_at=None,
             updated_at=None
         )
+
+        # Gestion des amenities et reviews si présents
+        amenity_ids = place_data.get('amenities', [])
+        for amenity_id in amenity_ids:
+            amenity = self.amenity_repo.get(amenity_id)
+            if amenity:
+                new_place.add_amenity(amenity)
+
+        review_ids = place_data.get('reviews', [])
+        for review_id in review_ids:
+            review = self.review_repo.get(review_id)
+            if review:
+                new_place.add_review(review)
+
         self.place_repo.add(new_place)
         return new_place
+
 
     def get_place(self, place_id):
         # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
@@ -40,13 +69,62 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
-        # Placeholder for logic to update a place
         place = self.place_repo.get(place_id)
-        if place is None:
+        if not place:
             return None
 
+        # Mise à jour des champs simples
+        if 'title' in place_data:
+            place.title = place_data['title']
+        if 'description' in place_data:
+            place.description = place_data['description']
+        if 'price' in place_data:
+            try:
+                place.price = float(place_data['price'])
+            except ValueError:
+                raise ValueError("Invalid price value")
+        if 'latitude' in place_data:
+            try:
+                place.latitude = float(place_data['latitude'])
+            except ValueError:
+                raise ValueError("Invalid latitude value")
+        if 'longitude' in place_data:
+            try:
+                place.longitude = float(place_data['longitude'])
+            except ValueError:
+                raise ValueError("Invalid longitude value")
+
+        # Mise à jour de l'owner si présent
+        if 'owner_id' in place_data:
+            owner = self.user_repo.get(place_data['owner_id'])
+            if not owner:
+                raise ValueError("Owner not found")
+            place.owner = owner
+
+        # Mise à jour des amenities (remplace la liste complète)
+        if 'amenities' in place_data:
+            place.amenities.clear()
+            for amenity_id in place_data['amenities']:
+                amenity = self.amenity_repo.get(amenity_id)
+                if amenity:
+                    place.add_amenity(amenity)
+
+        # Mise à jour des reviews (remplace la liste complète)
+        if 'reviews' in place_data:
+            place.reviews.clear()
+            for review_id in place_data['reviews']:
+                review = self.review_repo.get(review_id)
+                if review:
+                    place.add_review(review)
+
+        # Mise à jour de la date modifiée
         place.updated_at = datetime.now(timezone.utc)
+
+        # Enregistrer la mise à jour dans le repository
+        self.place_repo.update(place_id, place)
+
         return place
+
 
         # Placeholder method for creating a user
     def create_user(self, user_data):
