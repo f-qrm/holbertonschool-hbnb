@@ -43,7 +43,6 @@ class HBnBFacade:
             updated_at=None
         )
 
-        # Gestion des amenities et reviews si présents
         amenity_ids = place_data.get('amenities', [])
         for amenity_id in amenity_ids:
             amenity = self.amenity_repo.get(amenity_id)
@@ -61,11 +60,9 @@ class HBnBFacade:
 
 
     def get_place(self, place_id):
-        # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
         return self.place_repo.get(place_id)
 
     def get_all_places(self):
-        # Placeholder for logic to retrieve all places
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
@@ -73,7 +70,6 @@ class HBnBFacade:
         if not place:
             return None
 
-        # Mise à jour des champs simples
         if 'title' in place_data:
             place.title = place_data['title']
         if 'description' in place_data:
@@ -94,14 +90,12 @@ class HBnBFacade:
             except ValueError:
                 raise ValueError("Invalid longitude value")
 
-        # Mise à jour de l'owner si présent
         if 'owner_id' in place_data:
             owner = self.user_repo.get(place_data['owner_id'])
             if not owner:
                 raise ValueError("Owner not found")
             place.owner = owner
 
-        # Mise à jour des amenities (remplace la liste complète)
         if 'amenities' in place_data:
             place.amenities.clear()
             for amenity_id in place_data['amenities']:
@@ -109,7 +103,6 @@ class HBnBFacade:
                 if amenity:
                     place.add_amenity(amenity)
 
-        # Mise à jour des reviews (remplace la liste complète)
         if 'reviews' in place_data:
             place.reviews.clear()
             for review_id in place_data['reviews']:
@@ -117,16 +110,9 @@ class HBnBFacade:
                 if review:
                     place.add_review(review)
 
-        # Mise à jour de la date modifiée
         place.updated_at = datetime.now(timezone.utc)
-
-        # Enregistrer la mise à jour dans le repository
-        self.place_repo.update(place_id, place)
-
         return place
 
-
-        # Placeholder method for creating a user
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
@@ -142,12 +128,9 @@ class HBnBFacade:
         user = self.get_user(user_id)
         if not user:
             return None
-        user.first_name = new_data.get('first_name', user.first_name)
-        user.last_name = new_data.get('last_name', user.last_name)
-        user.email = new_data.get('email', user.email)
-
-        self.user_repo.update(user_id, new_data)
+        user.update(new_data)
         return user
+
 
     def get_all_user(self):
         return self.user_repo.get_all()
