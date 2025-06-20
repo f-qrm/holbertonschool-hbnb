@@ -140,9 +140,9 @@ class PlaceResource(Resource):
             dict: Place data if found.
             int: HTTP status code.
         """
-        place = facade.get_places(place_id)
+        place = facade.get_place(place_id)
         if place is None:
-            return {'Place not found'}, 404
+            return {'message': 'Place not found'}, 404
         return place.to_dict(), 200
 
     @api.expect(place_model)
@@ -151,19 +151,15 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
-        """
-        Update a place's information.
-
-        Args:
-            place_id (str): Unique identifier of the place.
-
-        Returns:
-            dict: Updated place data.
-            int: HTTP status code.
-        """
         data = api.payload
         place = facade.get_place(place_id)
         if not place:
-            return {'Place not found'}, 404
-        updated_place = facade.update_place(place_id, data)
-        return updated_place.to_dict()
+            return {'message': 'Place not found'}, 404
+
+        try:
+            updated_place = facade.update_place(place_id, data)
+            if not updated_place:
+                return {'message': 'Place not found'}, 404
+            return updated_place.to_dict(), 200
+        except ValueError as e:
+            return {'message': str(e)}, 400
