@@ -122,7 +122,7 @@ class Place(BaseModel):
             raise TypeError("latitude must be a number")
         if not -90 <= latitude <= 90:
             raise ValueError(
-                "latitude me be within the range of -90.0 to 90.0")
+                "latitude must be within the range of -90.0 to 90.0")
         self.latitude = round(latitude, 1)
 
         if not isinstance(longitude, float):

@@ -28,7 +28,7 @@ user_model = api.model('User', {
 @api.route('/')
 class UserList(Resource):
     """Handles operations related to the collection of users."""
-    @api.expect(user_model, validate=True)
+    @api.expect(user_model)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
@@ -41,15 +41,23 @@ class UserList(Resource):
             If the email is already registered, returns an error dictionary
             and 400 status code.
         """
-        user_data = api.payload
+        user_data = api.payload or {}
+        required_fields = ['first_name', 'last_name', 'email']
+        for field in required_fields:
+            if field not in user_data:
+                return {'error': f'Missing required field: {field}'}, 400
 
-        # Simulate email uniqueness check (to be replaced by real validation
-        # with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
-        new_user = facade.create_user(user_data)
+        try:
+            new_user = facade.create_user(user_data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
+        except Exception:
+            return {'error': 'Internal server error'}, 500
+        
         return {'id': new_user.id, 'first_name': new_user.first_name,
                 'last_name': new_user.last_name, 'email': new_user.email}, 201
 

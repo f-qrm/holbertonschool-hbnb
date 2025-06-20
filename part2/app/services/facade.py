@@ -28,20 +28,22 @@ class HBnBFacade:
             price = float(place_data['price'])
             latitude = float(place_data['latitude'])
             longitude = float(place_data['longitude'])
-        except (ValueError, KeyError) as e:
+        except (ValueError, KeyError):
             raise ValueError("Invalid numeric value for price, latitude or longitude")
-
-        new_place = Place(
-            id=None,
-            owner=owner,
-            title=place_data['title'],
-            description=place_data.get('description'),
-            price=price,
-            latitude=latitude,
-            longitude=longitude,
-            created_at=None,
-            updated_at=None
-        )
+        try:
+            new_place = Place(
+                id=None,
+                owner=owner,
+                title=place_data['title'],
+                description=place_data.get('description'),
+                price=price,
+                latitude=latitude,
+                longitude=longitude,
+                created_at=None,
+                updated_at=None
+            )
+        except (TypeError, ValueError) as e:
+            raise ValueError(f"Invalid place data: {str(e)}")
 
         amenity_ids = place_data.get('amenities', [])
         for amenity_id in amenity_ids:
