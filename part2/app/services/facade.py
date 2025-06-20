@@ -19,7 +19,7 @@ class HBnBFacade:
         # Placeholder for logic to create a place, including validation for price, latitude, and longitude
         new_place = Place(
             id=None,
-            owner_id=place_data['owner_id'],
+            owner=place_data['owner_id'],
             title=place_data['title'],
             description=place_data.get('description'),
             price=float(place_data['price']),
