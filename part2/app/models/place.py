@@ -142,7 +142,8 @@ class Place(BaseModel):
         Args:
             amenity (Amenity): The amenity to add.
         """
-        self.amenities.append(amenity)
+        if amenity not in self.amenities:
+            self.amenities.append(amenity)
 
     def add_review(self, review):
         """
@@ -152,6 +153,7 @@ class Place(BaseModel):
             review (Review): The review to add.
         """
         self.reviews.append(review)
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -160,9 +162,12 @@ class Place(BaseModel):
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "owner": self.owner,
-            "amenities": [a.to_dict() for a in self.amenities],
-            "reviews": self.reviews,
             "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "owner_id": self.owner.id if self.owner else None,
+            "owner": self.owner.to_dict() if self.owner else None,
+            "amenities": [amenity.to_dict() for amenity in getattr(self, "amenities", [])],
+            "reviews": [review.to_dict() for review in getattr(self, "reviews", [])]
         }
+
+
