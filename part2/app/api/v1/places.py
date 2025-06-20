@@ -22,8 +22,8 @@ Dependencies:
     - flask_restx
     - app.services.facade: Business logic layer for place operations.
 """
-from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_restx import Namespace, Resource, fields
 
 api = Namespace('places', description='Place operations')
 
@@ -160,6 +160,9 @@ class PlaceResource(Resource):
             updated_place = facade.update_place(place_id, data)
             if not updated_place:
                 return {'message': 'Place not found'}, 404
-            return updated_place.to_dict(), 200
+            return {
+                "message": "Place updated successfully",
+                "place": updated_place.to_dict()
+            }, 200
         except ValueError as e:
             return {'message': str(e)}, 400
