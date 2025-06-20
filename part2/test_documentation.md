@@ -125,8 +125,8 @@ curl -X GET "http://127.0.0.1:5000/api/v1/users/unknown-id"
 { "error": "User not found" }
 ```
 
-![Input test result](./test/Inputtest.png)
-![Output test result](./test/Outputtest.png)
+![Input test result](./test/INPUTtests.PNG)
+![Output test result](./test/OUTPUTtests.PNG)
 
 ---
 
@@ -170,7 +170,7 @@ class TestUserEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 ```
 
-![Unittest result](./test/Unittest.png)
+![Unittest result](./test/Unittest.PNG)
 
 ---
 
