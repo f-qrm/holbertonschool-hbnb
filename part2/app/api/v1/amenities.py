@@ -118,7 +118,7 @@ class AmenityResource(Resource):
         """
         amenity = facade.get_amenity(amenity_id)
         if amenity is None:
-            return {'Amenty not found'}, 404
+            return {'message': 'Amenty not found'}, 404
         return amenity.to_dict(), 200
 
     @api.expect(amenity_model)
@@ -138,9 +138,9 @@ class AmenityResource(Resource):
         """
         data = api.payload
         if 'name' not in data or not data['name'].strip():
-            return {'Name is required'}, 400
+            return {'message': 'Name is required'}, 400
         name = data['name'].strip()
         update_amenity = facade.update_amenity(amenity_id, {'name': name})
         if update_amenity is None:
-            return {'Amenity not found'}, 404
+            return {'message': 'Amenity not found'}, 404
         return update_amenity.to_dict(), 200
