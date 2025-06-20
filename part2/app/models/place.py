@@ -152,3 +152,18 @@ class Place(BaseModel):
             review (Review): The review to add.
         """
         self.reviews.append(review)
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "price": self.price,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "owner_id": self.owner['id'],
+            "owner": self.owner,
+            "amenities": [a.to_dict() for a in self.amenities],
+            "reviews": self.reviews,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
