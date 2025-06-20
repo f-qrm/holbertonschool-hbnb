@@ -68,6 +68,3 @@ migrations/
 *.json
 *.yaml
 *.yml
-part2/test/Inputtest.png
-part2/test/Outputtest.png
-part2/test/Unittest.png
