@@ -1,5 +1,4 @@
-"""User API endpoints for creating, retrieving, updating, and listing users.
-
+"""
 This module defines the RESTful routes for user-related operations such as:
 - Creating a new user
 - Listing all users
