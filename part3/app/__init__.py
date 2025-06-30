@@ -8,6 +8,22 @@ from app.api.v1.reviews import api as reviews_ns
 
 
 def create_app(config_class="config.DevelopmentConfig"):
+    """
+    Application factory to create and configure the Flask app instance.
+
+    Parameters:
+        config_class (str or class): The configuration class or import path
+            to use for the Flask application. Defaults to
+            'config.DevelopmentConfig'.
+
+    Returns:
+        Flask: Configured Flask application instance.
+    
+    This factory:
+    - Instantiates the Flask app.
+    - Loads configuration from the provided config class.
+    - Initializes the Flask-RESTx API and registers namespaces.
+    """
     app = Flask(__name__)
     api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API')
     app.config.from_object(config_class)
