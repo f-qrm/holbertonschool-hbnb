@@ -146,3 +146,10 @@ class UserResource(Resource):
             'last_name': updated_user.last_name,
             'email': updated_user.email
         }
+
+@api.route('/protected')
+class ProtectedUserResource(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
+        return {'message': f'Hello, user {current_user["id"]}'}, 200
