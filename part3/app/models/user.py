@@ -28,7 +28,6 @@ from app.models.place import Place
 from app.models.review import Review
 
 
-
 class BaseModel:
     """
     BaseModel class that provides common attributes and methods for other
@@ -91,7 +90,7 @@ class User(BaseModel):
         reviews (list): List of Review instances related to the user.
     """
 
-    def __init__(self, first_name, last_name, email, is_admin=False, id=None,
+    def __init__(self, first_name, last_name, email, password, is_admin=False, id=None,
                  created_at=None, updated_at=None):
         """
         Initialize a new User instance.
@@ -146,6 +145,10 @@ class User(BaseModel):
             raise ValueError("invalid email format")
         self.email = email
 
+        if not isinstance(password,str):
+            raise TypeError("password must be a string")
+        self.hash_password(password)
+
         self.places = []
         self.reviews = []
 
@@ -198,3 +201,13 @@ class User(BaseModel):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
+
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        from app import bcrypt
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+        from app import bcrypt
+        return bcrypt.check_password_hash(self.password, password)
