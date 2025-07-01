@@ -8,6 +8,10 @@ from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
+from flask_bcrypt import Bcrypt
+import config
+
+bcrypt = Bcrypt()
 
 
 jwt = JWTManager()
@@ -22,7 +26,7 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     Returns:
         Flask: Configured Flask application instance.
-    
+
     This factory:
     - Instantiates the Flask app.
     - Loads configuration from the provided config class.
@@ -39,4 +43,5 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(auth_ns, path="/api/v1/auth")
     jwt.init_app(app)
 
+    bcrypt.init_app(app)
     return app
