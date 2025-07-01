@@ -12,6 +12,7 @@ The endpoints are exposed under the '/users/' namespace using Flask-RESTx.
 from app.services import facade
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('users', description='User operations')
 
@@ -21,7 +22,9 @@ user_model = api.model('User', {
                                 description='First name of the user'),
     'last_name': fields.String(required=True,
                                description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user')
+    'email': fields.String(required=True, description='Email of the user'),
+    'password': fields.String(required=True,
+                              description='Password of the user')
 })
 
 
@@ -42,7 +45,7 @@ class UserList(Resource):
             and 400 status code.
         """
         user_data = api.payload or {}
-        required_fields = ['first_name', 'last_name', 'email']
+        required_fields = ['first_name', 'last_name', 'email', 'password']
         for field in required_fields:
             if field not in user_data:
                 return {'error': f'Missing required field: {field}'}, 400
@@ -57,9 +60,9 @@ class UserList(Resource):
             return {'error': str(e)}, 400
         except Exception:
             return {'error': 'Internal server error'}, 500
-        
-        return {'id': new_user.id, 'first_name': new_user.first_name,
-                'last_name': new_user.last_name, 'email': new_user.email}, 201
+
+        return {'id': new_user.id,
+                'message': 'User successfully registered'}, 201
 
     def get(self):
         """Retrieve a list of all registered users.
@@ -100,9 +103,11 @@ class UserResource(Resource):
         return {'id': user.id, 'first_name': user.first_name,
                 'last_name': user.last_name, 'email': user.email}, 200
 
+    @jwt_required()
     @api.expect(user_model, validate=True)
     @api.response(200, 'Successfully update')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Forbidden: cannot update another user')
     def put(self, user_id):
         """Update user information.
 
@@ -115,11 +120,21 @@ class UserResource(Resource):
             If the user is not found or update fails, returns an error
             dictionary.
         """
+        current_user = get_jwt_identity()
+        if str(current_user) != user_id:
+            return {'error': 'You are not allowed to update this user'}, 403
+
         user = facade.get_user(user_id,)
         if not user:
             return {'error': 'User not found'}, 404
 
         data = request.get_json()
+
+        if 'email' in data or 'password' in data:
+            return {'error': 'You cannot modify email or password.'}, 400
+        data.pop('email', None)
+        data.pop('password', None)
+
         updated_user = facade.put_user(user_id, data)
 
         if not updated_user:
