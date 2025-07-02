@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from app.services import facade
@@ -40,3 +41,10 @@ class Login(Resource):
         
         # Step 4: Return the JWT token to the client
         return {'access_token': access_token}, 200
+
+@api.route('/protected')
+class ProtectedUserResource(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
+        return {'message': f'Hello, user {current_user["id"]}'}, 200
