@@ -169,5 +169,3 @@ class Place(BaseModel):
             "amenities": [amenity.to_dict() for amenity in getattr(self, "amenities", [])],
             "reviews": [review.to_dict() for review in getattr(self, "reviews", [])]
         }
-
-
