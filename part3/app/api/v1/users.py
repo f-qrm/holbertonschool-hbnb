@@ -127,7 +127,7 @@ class UserResource(Resource):
             dictionary.
         """
         current_user = get_jwt_identity()
-        if current_user['id'] != user_id and not current_user.get('is_admin', False):
+        if str(current_user['id']) != str(user_id) and not current_user.get('is_admin', False):
             return {'error': 'You are not allowed to update this user'}, 403
 
         user = facade.get_user(user_id,)
@@ -136,7 +136,7 @@ class UserResource(Resource):
 
         data = request.get_json()
 
-        if 'email' in data or 'password' in data:
+        if ('email' in data or 'password' in data) and not current_user.get('is_admin', False):
             return {'error': 'You cannot modify email or password.'}, 400
         data.pop('email', None)
         data.pop('password', None)
@@ -150,5 +150,6 @@ class UserResource(Resource):
             'id': updated_user.id,
             'first_name': updated_user.first_name,
             'last_name': updated_user.last_name,
-            'email': updated_user.email
-        }
+            'email': updated_user.email,
+            'message': 'User successfully updated'
+        }, 200
