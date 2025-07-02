@@ -198,7 +198,7 @@ class ReviewResource(Resource):
             'place_id': update_review.place_id,
             'created_at': update_review.created_at.isoformat(),
             'updated_at': update_review.updated_at.isoformat()
-        }
+        }, 200
 
     @jwt_required()
     @api.response(200, 'Review deleted successfully')
