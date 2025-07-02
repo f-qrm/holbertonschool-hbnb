@@ -27,6 +27,12 @@ user_model = api.model('User', {
                               description='Password of the user')
 })
 
+user_update_model = api.model('UserUpdate', {
+    'first_name': fields.String(required=False, description='First name of the user'),
+    'last_name': fields.String(required=False, description='Last name of the user')
+})
+
+
 
 @api.route('/')
 class UserList(Resource):
@@ -104,7 +110,7 @@ class UserResource(Resource):
                 'last_name': user.last_name, 'email': user.email}, 200
 
     @jwt_required()
-    @api.expect(user_model, validate=True)
+    @api.expect(user_update_model, validate=True)
     @api.response(200, 'Successfully update')
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Forbidden: cannot update another user')
@@ -121,7 +127,7 @@ class UserResource(Resource):
             dictionary.
         """
         current_user = get_jwt_identity()
-        if str(current_user) != user_id:
+        if current_user['id'] != user_id and not current_user.get('is_admin', False):
             return {'error': 'You are not allowed to update this user'}, 403
 
         user = facade.get_user(user_id,)

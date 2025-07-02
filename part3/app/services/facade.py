@@ -17,6 +17,8 @@ class HBnBFacade:
 
     def create_place(self, place_data):
         owner_id = place_data.get('owner_id')
+        if isinstance(owner_id, dict):
+            owner_id = owner_id.get('id')
         if not owner_id:
             raise ValueError("owner_id is required")
 

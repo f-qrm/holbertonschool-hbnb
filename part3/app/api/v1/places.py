@@ -94,6 +94,8 @@ class PlaceList(Resource):
             int: HTTP status code.
         """
         data = api.payload
+        if isinstance(data.get('owner_id'), dict):
+            data['owner_id'] = data['owner_id'].get('id')
         data['owner_id'] = get_jwt_identity()
         required_fields = [
             'title', 'price', 'latitude', 'longitude'
@@ -157,11 +159,13 @@ class PlaceResource(Resource):
         """Update a place's information"""
         current_user_id = get_jwt_identity()
         data = api.payload
+        if isinstance(data.get('owner_id'), dict):
+            data['owner_id'] = data['owner_id'].get('id')
         place = facade.get_place(place_id)
         if not place:
             return {'message': 'Place not found'}, 404
 
-        if place.owner_id != current_user_id:
+        if place.owner.id != current_user_id:
             return {'message': 'Unauthorized action.'}, 403
 
         try:
