@@ -7,3 +7,5 @@ mysqlclient==2.2.7
 SQLAlchemy==2.0.41
 PyJWT==2.9.0
 flask-jwt-extended
+sqlalchemy
+flask-sqlalchemy
