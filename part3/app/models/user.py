@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+from app import db, bcrypt
+import uuid
+from baseclass import BaseModel  # Import BaseModel from its module
 """
 User and BaseModel module.
 
@@ -22,12 +25,12 @@ Dependencies:
 """
 
 import re
-from baseclass import BaseModel
 from app.models.place import Place
 from app.models.review import Review
 
 
 class User(BaseModel):
+    __tablename__ = 'users'
     """
     User class representing a user with personal details and related places
     and reviews.
@@ -41,9 +44,8 @@ class User(BaseModel):
         reviews (list): List of Review instances related to the user.
     """
 
-    def __init__(self, first_name, last_name, email, password, is_admin=False, id=None,
-                 created_at=None, updated_at=None):
-        """
+
+    """
         Initialize a new User instance.
 
         Args:
@@ -64,44 +66,13 @@ class User(BaseModel):
             TypeError: If any argument is of incorrect type.
             ValueError: If first_name or last_name exceed 50 characters or
             email is invalid.
-        """
-        from app.models.review import Review
-        super().__init__(id=id, created_at=created_at, updated_at=updated_at)
+    """
 
-        if not isinstance(is_admin, bool):
-            raise TypeError("is_admin must be a boolean")
-        self.is_admin = is_admin
-
-        if not isinstance(first_name, str):
-            raise TypeError("first_name must be a string")
-        if len(first_name) > 50:
-            raise ValueError(
-                "first_name must contain a maximum of 50"
-                "characters"
-            )
-        self.first_name = first_name
-
-        if not isinstance(last_name, str):
-            raise TypeError("last_name must be a string")
-        if len(last_name) > 50:
-            raise ValueError(
-                "last_name must contain a maximum of 50"
-                "characters"
-            )
-        self.last_name = last_name
-
-        if not isinstance(email, str):
-            raise TypeError("email must be a string")
-        if not self.is_email_valid(email):
-            raise ValueError("invalid email format")
-        self.email = email
-
-        if not isinstance(password,str):
-            raise TypeError("password must be a string")
-        self.hash_password(password)
-
-        self.places = []
-        self.reviews = []
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def is_email_valid(self, email):
         """
@@ -117,24 +88,6 @@ class User(BaseModel):
                    r"@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$")
 
         return re.match(pattern, email) is not None
-
-    def new_place(self, place):
-        """
-        Add a Place instance to the user's places list.
-
-        Args:
-            place (Place): Place instance to add.
-        """
-        self.places.append(place)
-
-    def new_review(self, review):
-        """
-        Add a Review instance to the user's reviews list.
-
-        Args:
-            review (Review): Review instance to add.
-        """
-        self.reviews.append(review)
 
     def to_dict(self):
         """
@@ -155,10 +108,8 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
-        from app import bcrypt
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
-        from app import bcrypt
         return bcrypt.check_password_hash(self.password, password)
