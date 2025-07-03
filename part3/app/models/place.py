@@ -7,54 +7,9 @@ This module defines two classes: BaseModel and Place.
 - Place represents a rental place, with validations on title, price,
   location, and relationships with amenities and reviews.
 """
-
-import uuid
-from datetime import datetime
-
+from baseclass import BaseModel
 from app.models.amenity import Amenity
 from app.models.review import Review
-
-
-class BaseModel:
-    """
-    Base model class providing ID, created_at, and updated_at fields.
-
-    Attributes:
-        id (str): Unique identifier.
-        created_at (datetime): Timestamp of instance creation.
-        updated_at (datetime): Timestamp of last update.
-    """
-
-    def __init__(self, id, created_at, updated_at):
-        """
-        Initializes the base model with ID and timestamps.
-
-        Args:
-            id (str): UUID string. If None, generates a new UUID.
-            created_at (datetime): Creation time. Defaults to now if None.
-            updated_at (datetime): Last update time. Defaults to now if None.
-        """
-        self.id = id if id else str(uuid.uuid4())
-        self.created_at = created_at if created_at else datetime.now()
-        self.updated_at = updated_at if updated_at else datetime.now()
-
-    def save(self):
-        """
-        Updates the `updated_at` timestamp to the current time.
-        """
-        self.updated_at = datetime.now()
-
-    def update(self, data):
-        """
-        Updates instance attributes using a dictionary of key-value pairs.
-
-        Args:
-            data (dict): Dictionary of attributes to update.
-        """
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.save()
 
 
 class Place(BaseModel):
