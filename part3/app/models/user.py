@@ -21,59 +21,10 @@ Dependencies:
     app.models.review.Review: Represents reviews associated with a user.
 """
 
-import uuid
 import re
-from datetime import datetime
+from baseclass import BaseModel
 from app.models.place import Place
 from app.models.review import Review
-
-
-class BaseModel:
-    """
-    BaseModel class that provides common attributes and methods for other
-    models.
-
-    Attributes:
-        id (str): Unique identifier for the instance, generated as a UUID4
-        string.
-        created_at (datetime): Timestamp when the instance was created.
-        updated_at (datetime): Timestamp when the instance was last updated.
-    """
-
-    def __init__(self, id=None, created_at=None, updated_at=None):
-        """
-        Initialize a new BaseModel instance.
-
-        Args:
-            id (str, optional): Unique identifier. If None, a new UUID4 string
-            is generated.
-            created_at (datetime, optional): Creation timestamp. If None,
-            current datetime is used.
-            updated_at (datetime, optional): Last update timestamp. If None,
-            current datetime is used.
-        """
-        self.id = id if id else str(uuid.uuid4())
-        self.created_at = created_at if created_at else datetime.now()
-        self.updated_at = updated_at if updated_at else datetime.now()
-
-    def save(self):
-        """
-        Update the `updated_at` timestamp to the current datetime.
-        """
-        self.updated_at = datetime.now()
-
-    def update(self, data):
-        """
-        Update attributes of the instance based on a dictionary and save
-        changes.
-
-        Args:
-            data (dict): Dictionary of attribute names and values to
-            update.
-        """
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
 
 
 class User(BaseModel):
