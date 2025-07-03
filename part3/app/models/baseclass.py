@@ -1,30 +1,23 @@
-from datetime import datetime
+from app import db
+from datetime import datetime, timezone
 import uuid
 
 
-class BaseModel:
+class BaseModel(db.Model):
     """Base model providing unique ID and timestamp management."""
+    __abstract__ = True  # This ensures SQLAlchemy does not create a table for BaseModel
 
-    def __init__(self, id=None, created_at=None, updated_at=None):
-        """
-        Initialize a new BaseModel instance.
-
-        Args:
-            id (str, optional): Unique identifier. Generated if None.
-            created_at (datetime, optional): Creation timestamp. Defaults
-            to now.
-            updated_at (datetime, optional): Last update timestamp. Defaults
-            to now.
-        """
-        self.id = id if id else str(uuid.uuid4())
-        self.created_at = created_at if created_at else datetime.now()
-        self.updated_at = updated_at if updated_at else datetime.now()
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate= lambda: datetime.now(timezone.utc))
 
     def save(self):
         """
         Update the `updated_at` timestamp to the current time.
         """
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.now(timezone.utc)
+        db.session.add(self)
+        db.session.commit()
 
     def update(self, data):
         """
