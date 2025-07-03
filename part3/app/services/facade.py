@@ -1,18 +1,20 @@
 import uuid
-from datetime import datetime, timezone
-from app.persistence.repository import SQLAlchemyRepository
-from app.models.amenity import Amenity
+from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
-from app.models.user import User
+from app.models.amenity import Amenity
+from datetime import datetime, timezone
+from app.persistence.repository import SQLAlchemyRepository
+from app.services.repositories. user_repo import UserRepository
+from app.services.repositories. amenity_repo import AmenityRepository
 
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repository = SQLAlchemyRepository(User)  # Switched to SQLAlchemyRepository
+        self.user_repository = UserRepository()  # Switched to SQLAlchemyRepository
         self.place_repository = SQLAlchemyRepository(Place)
         self.review_repository = SQLAlchemyRepository(Review)
-        self.amenity_repository = SQLAlchemyRepository(Amenity)
+        self.amenity_repository = AmenityRepository()
 
     def create_place(self, place_data):
         owner_id = place_data.get('owner_id')
@@ -122,6 +124,7 @@ class HBnBFacade:
 
     def create_user(self, user_data):
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repository.add(user)
         return user
 
@@ -129,7 +132,7 @@ class HBnBFacade:
         return self.user_repository.get(user_id)
 
     def get_user_by_email(self, email):
-        return self.user_repository.get_by_attribute('email', email)
+        return self.user_repository.get_user_by_email(email)
 
     def put_user(self, user_id, new_data):
         user = self.get_user(user_id)
@@ -143,37 +146,16 @@ class HBnBFacade:
         return self.user_repository.get_all()
 
     def create_amenity(self, amenity_data):
-        name = amenity_data.get('name')
-        if not name or not isinstance(name, str):
-            raise ValueError("Name is required")
-        new_amenity = Amenity(
-            id=str(uuid.uuid4()),
-            name=name,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc)
-            )
-        self.amenity_repository.add(new_amenity)
-        return new_amenity
+        return self.amenity_repository.create_amenity(amenity_data)
 
     def get_amenity(self, amenity_id):
-        amenity = self.amenity_repository.get(amenity_id)
-        if amenity is None:
-            return None
-        return amenity
+        return self.amenity_repository.get_amenity(amenity_id)
 
     def get_all_amenities(self):
-        return self.amenity_repository.get_all()
+        return self.amenity_repository.get_all_amenities()
 
     def update_amenity(self, amenity_id, amenity_data):
-        amenity = self.amenity_repository.get(amenity_id)
-        if amenity is None:
-            return None
-        name = amenity_data.get('name')
-        if not name:
-            raise ValueError('Name invalid')
-        amenity.name = name
-        amenity.updated_at = datetime.now(timezone.utc)
-        return amenity
+        return self.amenity_repository.update_amenity(amenity_id, amenity_data)
 
     def create_review(self, review_data):
         user = self.get_user(review_data["user_id"])
