@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-
 from app import db
-from app.models import Amenity, Place, Review, User
 
 
 class Repository(ABC):
