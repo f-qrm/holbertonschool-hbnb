@@ -4,51 +4,7 @@
 This module defines the BaseModel class for common attributes and behaviors,
 and the Amenity class for storing information about place amenities.
 """
-
-import uuid
-from datetime import datetime
-
-
-class BaseModel:
-    """Base model that defines common attributes and methods.
-
-    Attributes:
-        id (str): Unique identifier for each instance.
-        created_at (datetime): Timestamp of instance creation.
-        updated_at (datetime): Timestamp of last instance update.
-    """
-
-    def __init__(self, id, created_at, updated_at):
-        """Initializes the BaseModel instance.
-
-        Args:
-            id (str or None): ID of the instance. If None, a new UUID
-            is generated.
-            created_at (datetime or None): Creation time. Defaults to
-            current datetime.
-            updated_at (datetime or None): Last update time. Defaults to
-            current datetime.
-        """
-        self.id = id if id else str(uuid.uuid4())
-        self.created_at = created_at if created_at else datetime.now()
-        self.updated_at = updated_at if updated_at else datetime.now()
-
-    def save(self):
-        """Updates the `updated_at` timestamp to the current datetime."""
-        self.updated_at = datetime.now()
-
-    def update(self, data):
-        """Updates instance attributes based on a dictionary of
-        key-value pairs.
-
-        Args:
-            data (dict): Dictionary containing attribute names and their
-            new values.
-        """
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.save()
+from baseclass import BaseModel
 
 
 class Amenity(BaseModel):
