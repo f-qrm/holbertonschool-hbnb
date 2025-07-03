@@ -117,8 +117,8 @@ class HBnBFacade:
         return place
 
     def delete_place(self, place_id):
-       place = self.place_repo.get(place_id)
-       return self.place_repo.delete(place)
+       place = self.place_repository.get(place_id)
+       return self.place_repository.delete(place)
 
     def create_user(self, user_data):
         user = User(**user_data)
