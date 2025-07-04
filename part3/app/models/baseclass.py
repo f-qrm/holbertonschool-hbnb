@@ -30,3 +30,11 @@ class BaseModel(db.Model):
             if hasattr(self, key):
                 setattr(self, key, value)
         self.save()
+
+    def to_dict(self):
+        """
+        Convertit l'objet en dictionnaire avec ses colonnes de base.
+        Utile pour sérialisation JSON simple.
+        """
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns} # type: ignore
+
