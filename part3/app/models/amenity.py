@@ -4,8 +4,10 @@
 This module defines the BaseModel class for common attributes and behaviors,
 and the Amenity class for storing information about place amenities.
 """
-from baseclass import BaseModel
 from app import db
+from baseclass import BaseModel
+from sqlalchemy.orm import relationship
+
 
 class Amenity(BaseModel):
     """Amenity class for describing a feature or service available
@@ -21,10 +23,11 @@ class Amenity(BaseModel):
 
     name = db.Column(db.String(50), nullable=False)
 
-    """def to_dict(self):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+
+    def to_dict(self):
         return {
-            "id": self.id,
-            "name": self.name,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat()
-        }"""
+            'name': self.name
+        }
