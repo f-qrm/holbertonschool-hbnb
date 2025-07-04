@@ -22,6 +22,7 @@ Dependencies:
     - flask_restx
     - app.services.facade: Business logic layer for place operations.
 """
+from app.models.place import Place
 from app.services import facade
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -104,8 +105,9 @@ class PlaceList(Resource):
             if field not in data or not data[field]:
                 return {"message": f"{field} is required"}, 400
         try:
-            place = facade.create_place(data)
+            place: Place = facade.create_place(data)
             return place.to_dict(), 201
+
         except ValueError:
             return {'error': 'Invalid input: please check your data'}, 400
 
