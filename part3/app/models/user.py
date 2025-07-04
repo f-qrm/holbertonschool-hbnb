@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-from app import db, bcrypt
-import uuid
-from baseclass import BaseModel  # Import BaseModel from its module
 """
 User and BaseModel module.
 
@@ -25,8 +22,12 @@ Dependencies:
 """
 
 import re
+
+from app import bcrypt, db
 from app.models.place import Place
 from app.models.review import Review
+from baseclass import BaseModel
+from sqlalchemy.orm import relationship
 
 
 class User(BaseModel):
@@ -74,6 +75,9 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    places = relationship('Place', back_populates="owner", laz=True)
+    reviews = relationship('Review', backref='user', lazy=True)
+
     def is_email_valid(self, email):
         """
         Validate the format of an email address using a regular expression.
@@ -97,13 +101,10 @@ class User(BaseModel):
             dict: Représentation dictionnaire de l'utilisateur.
         """
         return {
-            "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
-            "is_admin": self.is_admin,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "is_admin": self.is_admin
         }
 
     def hash_password(self, password):
