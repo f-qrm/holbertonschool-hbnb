@@ -78,7 +78,9 @@ class Review(BaseModel):
     """Represents a review for a place made by a user."""
 
     def __init__(
+      
             self, place_id, user_id, rating, text, id=None, created_at=None,
+
             updated_at=None
     ):
         """
