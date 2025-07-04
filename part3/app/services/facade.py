@@ -129,7 +129,7 @@ class HBnBFacade:
         return user
 
     def get_user(self, user_id):
-        return self.user_repository.get(user_id)
+        return self.user_repository.get_user(user_id)
 
     def get_user_by_email(self, email):
         return self.user_repository.get_user_by_email(email)
@@ -143,7 +143,7 @@ class HBnBFacade:
 
 
     def get_all_user(self):
-        return self.user_repository.get_all()
+        return self.user_repository.get_all_user()
 
     def create_amenity(self, amenity_data):
         return self.amenity_repository.create_amenity(amenity_data)
