@@ -9,7 +9,13 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    DEBUG = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 config = {
     'development': DevelopmentConfig,
+    'production': ProductionConfig,
     'default': DevelopmentConfig
 }
