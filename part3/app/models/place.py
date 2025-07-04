@@ -7,8 +7,8 @@ This module defines two classes: BaseModel and Place.
 - Place represents a rental place, with validations on title, price,
   location, and relationships with amenities and reviews.
 """
-from app import db
-from baseclass import BaseModel
+from app.extensions import db
+from .baseclass import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 

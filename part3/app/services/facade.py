@@ -12,13 +12,13 @@ from app.services.repositories.review_repository import ReviewRepository
 class HBnBFacade:
     def __init__(self):
         self.user_repository = UserRepository()
+        self.review_repository = ReviewRepository()
+        self.amenity_repository = AmenityRepository()
         self.place_repository = PlaceRepository(
             self.user_repository,
             self.amenity_repository,
             self.review_repository
         )
-        self.review_repository = ReviewRepository()
-        self.amenity_repository = AmenityRepository()
 
     def create_place(self, place_data):
         return self.place_repository.create_place(place_data)

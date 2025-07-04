@@ -4,8 +4,8 @@
 This module defines the BaseModel class for common attributes and behaviors,
 and the Amenity class for storing information about place amenities.
 """
-from app import db
-from baseclass import BaseModel
+from app.extensions import db
+from .baseclass import BaseModel
 from sqlalchemy.orm import relationship
 
 
