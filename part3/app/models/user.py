@@ -23,10 +23,10 @@ Dependencies:
 
 import re
 
-from app import bcrypt, db
+from app.extensions import db, bcrypt
 from app.models.place import Place
 from app.models.review import Review
-from baseclass import BaseModel
+from .baseclass import BaseModel
 from sqlalchemy.orm import relationship
 
 
@@ -75,7 +75,7 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    places = relationship('Place', back_populates="owner", laz=True)
+    places = relationship('Place', back_populates="owner", lazy=True)
     reviews = relationship('Review', backref='user', lazy=True)
 
     def is_email_valid(self, email):

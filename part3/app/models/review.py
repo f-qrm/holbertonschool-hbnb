@@ -29,8 +29,8 @@ Usage example:
     text="Great place!")
 """
 
-from app import db
-from baseclass import BaseModel
+from app.extensions import db
+from .baseclass import BaseModel
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer
 
 
