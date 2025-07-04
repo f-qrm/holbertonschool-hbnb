@@ -6,6 +6,7 @@ and the Amenity class for storing information about place amenities.
 """
 from sqlalchemy import Column, String
 from baseclass import BaseModel
+from app import db
 
 class Amenity(BaseModel):
     """Amenity class for describing a feature or service available
@@ -19,7 +20,7 @@ class Amenity(BaseModel):
     """
 
     __tablename__ = 'amenities'
-    name = Column(String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
 
     def to_dict(self):
         return {
