@@ -38,28 +38,33 @@ class PlaceRepository(SQLAlchemyRepository):
                 latitude=latitude,
                 longitude=longitude,
                 owner=owner,
+                owner_id=owner.id
             )
         except (TypeError, ValueError) as e:
             raise ValueError(f"Invalid place data: {str(e)}")
 
         amenity_ids = place_data.get('amenities', [])
+        amenities = []
         for amenity_id in amenity_ids:
             amenity = self.amenity_repository.get(amenity_id)
             if amenity:
-                new_place.add_amenity(amenity)
+                amenities.append(amenity)
+        new_place.amenities = amenities
 
         review_ids = place_data.get('reviews', [])
+        reviews = []
         for review_id in review_ids:
             review = self.review_repository.get(review_id)
             if review:
-                new_place.add_review(review)
+                reviews.append(review)
+        new_place.reviews = reviews
 
         db.session.add(new_place)
         db.session.commit()
         return new_place
 
     def get_place(self, place_id):
-        return self.model.query.filter_by(id=place_id).first
+        return self.model.query.filter_by(id=place_id).first()
 
     def get_all_places(self):
         return self.model.query.all()
@@ -96,18 +101,20 @@ class PlaceRepository(SQLAlchemyRepository):
             place.owner = owner
 
         if 'amenities' in place_data:
-            place.amenities.clear()
+            amenities = []
             for amenity_id in place_data['amenities']:
                 amenity = self.amenity_repository.get(amenity_id)
                 if amenity:
-                    place.add_amenity(amenity)
+                    amenities.append(amenity)
+            place.amenities = amenities
 
         if 'reviews' in place_data:
-            place.reviews.clear()
+            reviews = []
             for review_id in place_data['reviews']:
                 review = self.review_repository.get(review_id)
                 if review:
-                    place.add_review(review)
+                    reviews.append(review)
+            place.reviews = reviews
 
         place.updated_at = datetime.now(timezone.utc)
 

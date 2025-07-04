@@ -7,10 +7,15 @@ This module defines two classes: BaseModel and Place.
 - Place represents a rental place, with validations on title, price,
   location, and relationships with amenities and reviews.
 """
-from baseclass import BaseModel
-from app.models.amenity import Amenity
-from app.models.review import Review
 from app import db
+from baseclass import BaseModel
+from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy.orm import relationship
+
+place_amenity = db.Table('place_amenity',
+                         Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
+                         Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
+                         )
 
 
 class Place(BaseModel):
@@ -39,7 +44,13 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
-    def __init__(self, title, description, price, latitude, longitude, owner):
+    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    owner = relationship('User', back_populates="places")
+    reviews = relationship('Review', backref='place', lazy=True)
+    amenities = relationship('Amenity', secondary=place_amenity, lazy='subquery',
+                             backref=db.backref('places', lazy=True))
+
+    def __init__(self, title, description, price, latitude, longitude, owner, owner_id):
         super().__init__()
         self.title = title
         self.description = description
@@ -47,3 +58,16 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
+        self.owner_id = owner_id
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'description': self.description,
+            'price': self.price,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'owner_id': self.owner_id,
+            'amenities': [a.to_dict() for a in self.amenities],
+            'reviews': [r.to_dict() for r in self.reviews]
+        }
