@@ -20,8 +20,7 @@ class Amenity(BaseModel):
         name (str): Name of the amenity (e.g., "Wi-Fi", "Parking").
     """
     __tablename__ = 'amenities'
-
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
 
     def __init__(self, name):
         super().__init__()
