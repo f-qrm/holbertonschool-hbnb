@@ -3,8 +3,8 @@ from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
 
-from part3.app.services.repositories.user_repository import UserRepository
-from part3.app.services.repositories.amenity_repository import AmenityRepository
+from app.services.repositories.user_repository import UserRepository
+from app.services.repositories.amenity_repository import AmenityRepository
 from app.services.repositories.place_repository import PlaceRepository
 from app.services.repositories.review_repository import ReviewRepository
 
