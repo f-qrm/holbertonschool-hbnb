@@ -30,47 +30,20 @@ Usage example:
 """
 
 from baseclass import BaseModel
+from app import db
+from sqlalchemy import CheckConstraint
 
 
 
 class Review(BaseModel):
     """Represents a review for a place made by a user."""
 
-    def __init__(
-            self, place_id, user_id, rating, text, id=None, created_at=None,
-            updated_at=None
-    ):
-        """
-        Initialize a new Review instance.
+    __tablename__ = 'reviews'
 
-        Args:
-            id (str): Unique identifier for the review.
-            place (Place): The place being reviewed.
-            user (User): The user who wrote the review.
-            rating (int): The rating given in the review.
-            text (str): The text content of the review.
-            created_at (datetime, optional): Creation timestamp.
-            updated_at (datetime, optional): Last update timestamp.
+    text = db.Column(db.String(1000), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
 
-        Raises:
-            TypeError: If any attribute is of incorrect type.
-            TypeError: If the provided place is not a Place instance.
-        """
-
-        super().__init__(id=id, created_at=created_at, updated_at=updated_at)
-
-        if not isinstance(place_id, str):
-            raise TypeError("place must be a string")
-        self.place_id = place_id
-
-        if not isinstance(user_id, str):
-            raise TypeError("User must be a string")
-        self.user_id = user_id
-
-        if not isinstance(rating, int):
-            raise TypeError("rating must be an integer")
-        self.rating = rating
-
-        if not isinstance(text, str):
-            raise TypeError("text must be a string")
-        self.text = text
+    __table_args__ = (
+        CheckConstraint('rating >= 1 AND rating <= 5',
+                        name='check_rating_range'),
+    )

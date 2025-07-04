@@ -1,6 +1,6 @@
-from app import db
 from abc import ABC, abstractmethod
-from app.models import User, Place, Review, Amenity
+from app import db
+
 
 class Repository(ABC):
     @abstractmethod
@@ -56,4 +56,5 @@ class SQLAlchemyRepository(Repository):
             db.session.commit()
 
     def get_by_attribute(self, attr_name, attr_value):
-        return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
+        return self.model.query.filter(
+            getattr(self.model, attr_name) == attr_value).first()
