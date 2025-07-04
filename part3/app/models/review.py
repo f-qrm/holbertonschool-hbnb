@@ -29,10 +29,9 @@ Usage example:
     text="Great place!")
 """
 
-from baseclass import BaseModel
 from app import db
-from sqlalchemy import CheckConstraint
-
+from baseclass import BaseModel
+from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer
 
 
 class Review(BaseModel):
@@ -43,7 +42,16 @@ class Review(BaseModel):
     text = db.Column(db.String(1000), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
+    place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
     __table_args__ = (
         CheckConstraint('rating >= 1 AND rating <= 5',
                         name='check_rating_range'),
     )
+
+    def to_dict(self):
+        return {
+            'text': self.text,
+            'rating': self.rating
+        }
