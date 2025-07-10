@@ -120,6 +120,51 @@ Each entity inherits from `BaseModel`, which provides shared functionality inclu
 
 ### 📦 Entities and Responsibilities
 
+Below is the ER diagram representing the core entities and their relationships in the HBnB system, created using Mermaid.js:
+
+```mermaid
+erDiagram
+User {
+    UUID4 id
+    string first_name
+    string last_name
+    string email
+    string password
+    boolean is_admin
+}
+Place {
+    UUID4 id
+    string title
+    string description
+    float price
+    float latitude
+    float longitude
+    UUID4 owner_id
+}
+Review {
+    UUID4 id
+    string text
+    int rating
+    UUID4 user_id
+    UUID4 place_id
+}
+Amenity {
+    UUID4 id
+    string name
+}
+Place_Amenity {
+    UUID4 place_id
+    UUID4 amenity_id
+}
+User ||--o{ Place : owns
+User ||--o{Review : writes
+Place ||--o{Review : has
+Place ||--o{Place_Amenity : includes
+Amenity ||--o{Place_Amenity : is_linked
+```
+
+---
+
 #### `BaseModel`
 
 Common base class:
