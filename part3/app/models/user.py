@@ -23,11 +23,12 @@ Dependencies:
 
 import re
 
-from app.extensions import db, bcrypt
+from app.extensions import bcrypt, db
 from app.models.place import Place
 from app.models.review import Review
-from .baseclass import BaseModel
 from sqlalchemy.orm import relationship
+
+from .baseclass import BaseModel
 
 
 class User(BaseModel):
@@ -95,11 +96,12 @@ class User(BaseModel):
 
     def to_dict(self):
         """
-        Convertit l'objet User en dictionnaire, utile pour le JSON.
+        Converts the User object into a dictionary, useful for JSON serialization.
 
         Returns:
-            dict: Représentation dictionnaire de l'utilisateur.
+            dict: Dictionary representation of the user.
         """
+
         return {
             "first_name": self.first_name,
             "last_name": self.last_name,
