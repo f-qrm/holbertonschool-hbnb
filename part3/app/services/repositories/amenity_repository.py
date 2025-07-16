@@ -18,9 +18,10 @@ class AmenityRepository(SQLAlchemyRepository):
         name = amenity_data.get('name')
         if not name or not isinstance(name, str):
             raise ValueError("Name is required and must be a string")
-        new_amenity = Amenity(name=name)
-        self.add(new_amenity)
-        return new_amenity
+        existing = next((a for a in self.get_all_amenities() if a.name == name), None)
+        if existing:
+            return existing
+        return self.amenity_repository.create_amenity(amenity_data)
 
     def update_amenity(self, amenity_id, amenity_data):
         amenity = self.get(amenity_id)
