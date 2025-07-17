@@ -62,6 +62,7 @@ class Place(BaseModel):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'title': self.title,
             'description': self.description,
             'price': self.price,
