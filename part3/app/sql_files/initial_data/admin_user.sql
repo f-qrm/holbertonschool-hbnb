@@ -14,3 +14,7 @@ VALUES (
     '$2b$12$eIf5YmlO0TvUVO27UWO4Au0hc6fQ1SIuzixcqhY3S5ELHOiJGvAZO',
     TRUE
 );
+
+"""
+admin1234
+"""
