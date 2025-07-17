@@ -21,7 +21,10 @@ class AmenityRepository(SQLAlchemyRepository):
         existing = next((a for a in self.get_all_amenities() if a.name == name), None)
         if existing:
             return existing
-        return self.amenity_repository.create_amenity(amenity_data)
+
+        amenity = Amenity(name=name)
+        self.add(amenity)
+        return amenity
 
     def update_amenity(self, amenity_id, amenity_data):
         amenity = self.get(amenity_id)
