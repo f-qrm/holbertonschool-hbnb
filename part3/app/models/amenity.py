@@ -28,5 +28,6 @@ class Amenity(BaseModel):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'name': self.name
         }
