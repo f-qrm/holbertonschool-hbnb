@@ -2,8 +2,6 @@ from flask import Flask
 from flask_restx import Api
 from app.extensions import db, bcrypt, jwt
 
-
-from config import DevelopmentConfig
 import config
 
 from app.api.v1.admin import api as admin_ns
