@@ -32,7 +32,7 @@ Usage example:
 from app.extensions import db
 from .baseclass import BaseModel
 from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer
-
+from sqlalchemy.orm import relationship
 
 class Review(BaseModel):
     """Represents a review for a place made by a user."""
@@ -41,9 +41,9 @@ class Review(BaseModel):
 
     text = db.Column(db.String(1000), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-
     place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user = relationship('User', back_populates='reviews')
 
     __table_args__ = (
         CheckConstraint('rating >= 1 AND rating <= 5',
@@ -54,5 +54,9 @@ class Review(BaseModel):
         return {
             'id': self.id,
             'text': self.text,
-            'rating': self.rating
+            'rating': self.rating,
+            'user':{
+                'user_first_name': self.user.first_name,
+                'user_last_name': self.user.last_name
+            }
         }

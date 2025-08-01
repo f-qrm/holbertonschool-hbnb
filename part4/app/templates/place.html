@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{  url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HBNB logo" class="logo" width="140" height="60">
+            </a>
+            <a href="{{ url_for('login') }}" class="login-button" id="login-link">Login</a>
+            <button id="logout-button">Logout</button>
+        </nav>           
+    </header>
+    <main>
+        <section id="place-details">
+            <div class="place-info">
+                <!-- Place details will be populated dynamically -->
+                </div>
+        </section>
+        <section id="reviews">
+            <h2>Reviews</h2>
+            <div class="review-card">
+                <!-- Reviews will be populated dynamically -->
+            </div>
+        </section>
+        <section id="add-review">
+            <h2>Add a Review</h2>
+            <form id="review-form" action="{{ url_for('place') }}">
+                <div class="rR-display">
+                    <label for="review-text">Your Review:</label>
+                    <textarea id="review-text" name="review-text" required></textarea>
+                </div>
+                <div class="rR-display">
+                    <label for="rating">Rating:</label>
+                    <select id="rating" name="rating" required>
+                        <option value="">-- Select --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <button type="submit" class="details-button">Submit Review</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 HBnB Evolution. All rights reserved.</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
